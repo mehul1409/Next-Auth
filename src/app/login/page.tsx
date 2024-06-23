@@ -58,6 +58,12 @@ const page =async () => {
                     }}>
                         <Button type='submit'>Login with google</Button>
                     </form>
+                    <form action={async()=>{
+                        'use server';
+                        await signIn('github');
+                    }}>
+                        <Button type='submit'>Login with github</Button>
+                    </form>
                     <Link href='/signup'>Don't have an account</Link>
                 </CardFooter>
             </Card>

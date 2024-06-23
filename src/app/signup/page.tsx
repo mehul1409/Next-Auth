@@ -2,7 +2,6 @@ import React from 'react'
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
@@ -14,9 +13,15 @@ import { User } from '@/models/userModel'
 import { hash } from 'bcryptjs'
 import { redirect } from 'next/navigation'
 import { connectToDatabase } from '@/lib/utils'
-import { signIn } from '@/auth'
+import { auth, signIn } from '@/auth'
 
-const page = () => {
+const page =async () => {
+    const session = await auth();
+    const user = session?.user;
+    
+    if(user){
+        redirect('/');
+    }
     return (
         <div className='flex justify-center items-center'>
             <Card>
@@ -63,6 +68,12 @@ const page = () => {
                         await signIn('google');
                     }}>
                         <Button type='submit'>Login with google</Button>
+                    </form>
+                    <form action={async()=>{
+                        'use server';
+                        await signIn('github');
+                    }}>
+                        <Button type='submit'>Login with github</Button>
                     </form>
                     <Link href='/login'>Already have an account</Link>
                 </CardFooter>

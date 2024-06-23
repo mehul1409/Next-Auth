@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema({
     googleId:{
         type:String,
     },
+    githubId:{
+        type:String,
+    }
 })
 
 export const User = mongoose.models?.User || mongoose.model("User",userSchema);

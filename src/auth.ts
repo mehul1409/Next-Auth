@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
+import GitHub from "next-auth/providers/github"
 import { User } from "./models/userModel";
 import { compare } from 'bcryptjs';
 import { connectToDatabase } from "./lib/utils";
@@ -9,6 +10,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google({
     clientId: process.env.AUTH_GOOGLE_ID,
     clientSecret: process.env.AUTH_GOOGLE_SECRET,
+  }),
+  GitHub({
+    clientId:process.env.AUTH_GITHUB_ID,
+    clientSecret:process.env.AUTH_GITHUB_SECRET,
   }),
   Credentials({
     name: "Credentials",
@@ -49,10 +54,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn:'/login',
   },
   callbacks:{
-    signIn:async({user,account})=>{
-        if(account?.provider === 'google'){
+    signIn:async(s)=>{
+      console.log(s);
+        if(s.account?.provider === 'google' || s.account?.provider == 'github'){
           try {
-            const {email,name,id} = user;
+            const {email,name,id} = s.user;
             await connectToDatabase();
 
             const alreadyuser = await User.findOne({email});
